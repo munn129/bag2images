@@ -3,9 +3,6 @@
 import rospy
 from novatel_oem7_msgs.msg import INSPVA
 
-lat = 0
-lon = 0
-
 def inspva_callback(data):
     lat = data.latitude
     lon = data.longitude
@@ -17,5 +14,3 @@ def listener():
 
 if __name__ == '__main__':
     listener()
-
-    print(lat, lon)
