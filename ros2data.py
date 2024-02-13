@@ -3,15 +3,30 @@
 import rospy
 from novatel_oem7_msgs.msg import INSPVA
 
-def inspva_callback(data):
-    lat = data.latitude
-    lon = data.longitude
+class Ros2data():
+    def __init__(self) -> None:
+        self.latitude = 0
+        self.longitude = 0
+        rospy.init_node('test', anonymous=True)
+        rospy.Subscriber('/novatel/oem7/inspva', INSPVA, self.inspva_callback)
 
-def listener():
-    rospy.init_node('inspva_listener', anonymous=True)
-    rospy.Subscriber("/novatel/oem7/inspva", INSPVA, inspva_callback)
-    rospy.spin()
+    def inspva_callback(self, data) -> None:
+        self.latitude = data.latitude
+        self.longitude = data.longitude
+
+    def get_gps(self) -> tuple:
+        return self.latitude, self.longitude
 
 if __name__ == '__main__':
-    listener()
-    print("a")
+
+    ros2data = Ros2data()
+
+    try:
+        while not rospy.is_shutdown():
+            print(f'lat: {ros2data.get_gps()[0]}, long: {ros2data.get_gps()[1]}')
+    except rospy.ROSInterruptException:
+        pass
+    except KeyboardInterrupt:
+        pass
+
+    rospy.spin()
