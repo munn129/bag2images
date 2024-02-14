@@ -14,6 +14,7 @@ class Ros2data():
         self.east_vel = 0
         self.image = None
         self.bridge = CvBridge()
+        self.time = 0
         rospy.init_node('test', anonymous=True)
         rospy.Subscriber('/novatel/oem7/inspva', INSPVA, self.inspva_callback)
         rospy.Subscriber('/gmsl_camera/dev/video0/compressed', CompressedImage, self.image_callback)
@@ -23,6 +24,7 @@ class Ros2data():
         self.longitude = data.longitude
         self.north_vel = data.north_velocity
         self.east_vel = data.east_velocity
+        self.time = data.header.stamp.secs
 
     def image_callback(self, data) -> None:
         try:
@@ -30,6 +32,9 @@ class Ros2data():
         except Exception as e:
             print(e)
             return
+        
+    def get_time(self) -> float:
+        return self.time
 
     def get_gps(self) -> tuple:
         return self.latitude, self.longitude
@@ -43,24 +48,21 @@ class Ros2data():
             cv2.putText(self.image, 'lon : ' + str(self.longitude), (100, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
             cv2.namedWindow('image', cv2.WINDOW_NORMAL)
             cv2.imshow('image', self.image)
-            cv2.resizeWindow('image', 800, 600)
+            cv2.resizeWindow('image', 800, 500)
             cv2.waitKey(1)
         else:
             print('\r image object is None', end='')
 
 def main():
     ros2data = Ros2data()
-
-    # rate = rospy.Rate(1)  # Adjust the rate as needed
-
     try:
         while not rospy.is_shutdown():
-            if int(ros2data.get_vel()[0]) > 1 or int(ros2data.get_vel()[1]) > 1:
-                print(f'\rRat: {ros2data.get_gps()[0]}, long: {ros2data.get_gps()[1]}' , end = '')
+            if abs(ros2data.get_vel()[0]) > 0.001 and abs(ros2data.get_vel()[1]) > 0.001:
+                if ros2data.get_time() % 3 == 0:
+                    print(f'\rRat: {ros2data.get_gps()[0]}, long: {ros2data.get_gps()[1]}' , end = '')
+                    ros2data.image_show()
             else:
                 print(f'\rvehicle is not moving...', end='')
-            ros2data.image_show()
-            # rate.sleep()
     except KeyboardInterrupt:
         pass
 
