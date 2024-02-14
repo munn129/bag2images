@@ -2,7 +2,7 @@
 
 import rospy
 import cv2
-from sensor_msgs.msg import Image, CompressedImage
+from sensor_msgs.msg import CompressedImage
 from novatel_oem7_msgs.msg import INSPVA
 from cv_bridge import CvBridge
 
@@ -10,6 +10,8 @@ class Ros2data():
     def __init__(self) -> None:
         self.latitude = 0
         self.longitude = 0
+        self.north_vel = 0
+        self.east_vel = 0
         self.image = None
         self.bridge = CvBridge()
         rospy.init_node('test', anonymous=True)
@@ -19,6 +21,8 @@ class Ros2data():
     def inspva_callback(self, data) -> None:
         self.latitude = data.latitude
         self.longitude = data.longitude
+        self.north_vel = data.north_velocity
+        self.east_vel = data.east_velocity
 
     def image_callback(self, data) -> None:
         try:
@@ -30,9 +34,16 @@ class Ros2data():
     def get_gps(self) -> tuple:
         return self.latitude, self.longitude
     
+    def get_vel(self) -> tuple:
+        return self.north_vel, self.east_vel
+    
     def image_show(self) -> None:
         if self.image is not None:
+            cv2.putText(self.image, 'lat : ' + str(self.latitude), (100, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
+            cv2.putText(self.image, 'lon : ' + str(self.longitude), (100, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
+            cv2.namedWindow('image', cv2.WINDOW_NORMAL)
             cv2.imshow('image', self.image)
+            cv2.resizeWindow('image', 800, 600)
             cv2.waitKey(1)
         else:
             print('\r image object is None', end='')
@@ -44,7 +55,10 @@ def main():
 
     try:
         while not rospy.is_shutdown():
-            print(f'\rRat: {ros2data.get_gps()[0]}, long: {ros2data.get_gps()[1]}', end = '')
+            if int(ros2data.get_vel()[0]) > 1 or int(ros2data.get_vel()[1]) > 1:
+                print(f'\rRat: {ros2data.get_gps()[0]}, long: {ros2data.get_gps()[1]}' , end = '')
+            else:
+                print(f'\rvehicle is not moving...', end='')
             ros2data.image_show()
             # rate.sleep()
     except KeyboardInterrupt:
