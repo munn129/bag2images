@@ -28,6 +28,7 @@ for i, (m,n) in enumerate(matches):
 pts1 = np.int32(pts1)
 pts2 = np.int32(pts2)
 F, mask = cv2.findFundamentalMat(pts1, pts2, cv2.FM_LMEDS)
+E, mask = cv2.findEssentialMat(pts1, pts2)
 
 pts1 = pts1[mask.ravel()==1]
 pts2 = pts2[mask.ravel()==1]
