@@ -59,12 +59,13 @@ class Ros2data():
 def data_writer(gps, image, idx) -> None:
     
     image_name = idx
+    dataset = '1114'
 
     if image is not None:
-        with open('./data/gps.txt', 'a') as file:
-            file.write(f'{image_name:06d}.png {gps[0]} {gps[1]}\n')
+        with open(f'./data/{dataset}/gps.txt', 'a') as file:
+            file.write(f'{dataset}/{image_name:06d}.png {gps[0]} {gps[1]}\n')
 
-        cv2.imwrite(f'./data/{image_name:06d}.png', image)
+        cv2.imwrite(f'./data/{dataset}/{image_name:06d}.png', image)
 
 def main():
     ros2data = Ros2data()
