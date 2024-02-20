@@ -42,6 +42,9 @@ class Ros2data():
     def get_vel(self) -> tuple:
         return self.north_vel, self.east_vel
     
+    def get_image(self) -> list:
+        return self.image
+    
     def image_show(self) -> None:
         if self.image is not None:
             cv2.putText(self.image, 'lat : ' + str(self.latitude), (100, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
@@ -53,14 +56,27 @@ class Ros2data():
         else:
             print('\r image object is None', end='')
 
+def data_writer(gps, image, idx) -> None:
+    
+    image_name = idx
+
+    if image is not None:
+        with open('./data/gps.txt', 'a') as file:
+            file.write(f'{image_name:06d}.png {gps[0]} {gps[1]}\n')
+
+        cv2.imwrite(f'./data/{image_name:06d}.png', image)
+
 def main():
     ros2data = Ros2data()
+    idx = 1
     try:
         while not rospy.is_shutdown():
-            if abs(ros2data.get_vel()[0]) > 0.001 and abs(ros2data.get_vel()[1]) > 0.001:
+            if abs(ros2data.get_vel()[0]) > 0.003 and abs(ros2data.get_vel()[1]) > 0.003:
                 if ros2data.get_time() % 3 == 0:
                     print(f'\rRat: {ros2data.get_gps()[0]}, long: {ros2data.get_gps()[1]}' , end = '')
                     ros2data.image_show()
+                    data_writer(ros2data.get_gps(), ros2data.get_image(), idx)
+                    idx += 1
             else:
                 print(f'\rvehicle is not moving...', end='')
     except KeyboardInterrupt:
