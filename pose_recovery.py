@@ -3,8 +3,8 @@ import cv2
 
 from math import sqrt
 
-image1 = cv2.imread('./000001.png', cv2.IMREAD_GRAYSCALE)
-image2 = cv2.imread('./000005.png', cv2.IMREAD_GRAYSCALE)
+image1 = cv2.imread('./000069.png', cv2.IMREAD_GRAYSCALE)
+image2 = cv2.imread('./000039.png', cv2.IMREAD_GRAYSCALE)
 
 sift_obj = cv2.SIFT_create()
 
@@ -36,8 +36,8 @@ re_retval, re_rot, re_tran, re_mask = cv2.recoverPose(E, points1, points2)
 
 print(f'de_tran: {de_tran}, re_tran: {re_tran}')
 
-query_gps = 37.391707531439515, 126.6445309365309
-data_gps = 37.39197085599082, 126.64394834336419
+query_gps = 37.39765677464414, 126.63501638862748
+data_gps = 37.397544781716604, 126.63517695015959
 
 scale = sqrt((query_gps[0]-data_gps[0])**2 + (query_gps[1]-data_gps[1])**2)
 
