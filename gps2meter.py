@@ -15,7 +15,10 @@ def gps_to_meter(lat1, long1, lat2, long2) -> float:
     
     return d * 1000 # meter
 
-distance = gps_to_meter(37, 126, 37, 126.00001)
+query = 37.391707531439515, 126.6445309365309
+retrieved = 37.39234168, 126.64446915
+
+distance = gps_to_meter(query[0], query[1], retrieved[0], retrieved[1])
 
 print(distance)
 
