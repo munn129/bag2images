@@ -1,12 +1,12 @@
 import os
 
-output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'output.txt')
+output_path = './rain_3rd_lane_list.txt'
 
-file_names = [i for i in range(0,801)]
+file_names = [i for i in range(1,35)]
 
 with open(output_path, 'w') as file:
     for file_name in file_names:
-        file.write(f"image_2/{file_name:06d}.png\n")
+        file.write(f"rain_3rd_lane/{file_name:06d}.png\n")
 
 print("complete")
 
