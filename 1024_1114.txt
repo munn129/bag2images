@@ -1,3 +1,0 @@
-/patchnetvlad_workspace/1024/000069.png, /patchnetvlad_workspace/1114/000043.png
-/patchnetvlad_workspace/1024/000069.png, /patchnetvlad_workspace/1114/000040.png
-/patchnetvlad_workspace/1024/000069.png, /patchnetvlad_workspace/1114/000039.png

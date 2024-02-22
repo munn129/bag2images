@@ -12,6 +12,7 @@ class Ros2data():
     def __init__(self) -> None:
         self.latitude = 0
         self.longitude = 0
+        self.height = 0
         self.north_vel = 0
         self.east_vel = 0
         self.image = None
@@ -25,6 +26,7 @@ class Ros2data():
     def inspva_callback(self, data) -> None:
         self.latitude = data.latitude
         self.longitude = data.longitude
+        self.height = data.height
         self.north_vel = data.north_velocity
         self.east_vel = data.east_velocity
         self.time = data.header.stamp.secs
@@ -41,7 +43,7 @@ class Ros2data():
         return self.time
 
     def get_gps(self) -> tuple:
-        return self.latitude, self.longitude
+        return self.latitude, self.longitude, self.height
     
     def get_vel(self) -> float:
         return sqrt(self.north_vel**2 + self.east_vel**2)
@@ -68,11 +70,11 @@ class Ros2data():
 def data_writer(gps, image, idx) -> None:
     
     image_name = idx
-    dataset = 'rain_3rd_lane'
+    dataset = '1024_with_height'
 
     if image is not None:
         with open(f'./data/{dataset}/gps.txt', 'a') as file:
-            file.write(f'{dataset}/{image_name:06d}.png {gps[0]} {gps[1]}\n')
+            file.write(f'{dataset}/{image_name:06d}.png {gps[0]} {gps[1]} {gps[2]}\n')
 
         cv2.imwrite(f'./data/{dataset}/{image_name:06d}.png', image)
 
@@ -82,9 +84,9 @@ def main():
     try:
         idx = 1
         while not rospy.is_shutdown():
-            if (ros2data.get_vel() > 0.1) and (int(ros2data.get_seq()) % 50 == 0):
+            if (ros2data.get_vel() > 0.1) and (int(ros2data.get_seq()) % 20 == 0):
                 print(f'\rRat: {ros2data.get_gps()[0]}, long: {ros2data.get_gps()[1]}, idx: {idx}          ' , end = '')
-                ros2data.image_show()
+                # ros2data.image_show()
                 data_writer(ros2data.get_gps(), ros2data.get_image(), idx)
                 idx += 1
                 rospy.sleep(sleep_time)
