@@ -14,8 +14,8 @@ def gps_to_meter(lat1, long1, lat2, long2) -> float:
     
     return d * 1000 # meter
 
-image1 = cv2.imread('./000001.png', cv2.IMREAD_GRAYSCALE)
-image2 = cv2.imread('./000011.png', cv2.IMREAD_GRAYSCALE)
+image1 = cv2.imread('./000060.png', cv2.IMREAD_GRAYSCALE) # query
+image2 = cv2.imread('./000030.png', cv2.IMREAD_GRAYSCALE) # dataset
 
 sift_obj = cv2.SIFT_create()
 
@@ -34,6 +34,7 @@ points2 = []
 
 for i, (m,n) in enumerate(matches):
     if m.distance < 0.8 * n.distance:
+        # if m.distance is under 0.5, error occurs
         points2.append(keypoint2[m.trainIdx].pt)
         points1.append(keypoint1[m.queryIdx].pt)
 
@@ -45,8 +46,8 @@ E, mask = cv2.findEssentialMat(points1, points2)
 de_rot1, de_rot2, de_tran = cv2.decomposeEssentialMat(E)
 re_retval, re_rot, re_tran, re_mask = cv2.recoverPose(E, points1, points2)
 
-query_gps = 37.39246703655914, 126.64313877241125
-data_gps = 37.392469887350785, 126.64313416569627
+query_gps = 37.396247679384764, 126.63717799601285
+data_gps = 37.39627776359797, 126.63713351147672
 
 scale = sqrt((query_gps[0]-data_gps[0])**2 + (query_gps[1]-data_gps[1])**2)
 print(scale)
@@ -58,4 +59,5 @@ distance = gps_to_meter(data_gps[0], data_gps[1], estimate[0], estimate[1])
 distance2 = gps_to_meter(data_gps[0], data_gps[1], estimate2[0], estimate2[1])
 gt = gps_to_meter(query_gps[0], query_gps[1], data_gps[0], data_gps[1])
 
-print(f'decompose method: {distance}, error: {distance-gt}\n recover method: {distance2}, error: {distance2 - gt}\n')
+print(f'decompose method: {distance}, error: {distance-gt}\n recover method: {distance2}, error: {distance2 - gt}\n\
+      gt: {gt}')

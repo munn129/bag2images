@@ -3,8 +3,8 @@ import cv2
 from matplotlib import pyplot as plt
 from math import sqrt
 
-img1 = cv2.imread('./000001.png', cv2.IMREAD_GRAYSCALE) # query
-img2 = cv2.imread('./000021.png', cv2.IMREAD_GRAYSCALE)
+img1 = cv2.imread('./000020.png', cv2.IMREAD_GRAYSCALE) # query
+img2 = cv2.imread('./000010.png', cv2.IMREAD_GRAYSCALE)
 
 sift = cv2.SIFT_create()
 
