@@ -8,6 +8,8 @@ from sensor_msgs.msg import CompressedImage
 from novatel_oem7_msgs.msg import INSPVA
 from cv_bridge import CvBridge
 
+from gps2meter import gps_to_meter
+
 class Ros2data():
     def __init__(self) -> None:
         self.latitude = 0
@@ -82,19 +84,28 @@ def data_writer(gps, image, idx) -> None:
 
     if image is not None:
         with open(f'./data/{dataset}/gps.txt', 'a') as file:
-            file.write(f'{dataset}/{image_name:06d}.png {gps[0]} {gps[1]} {gps[2]}\n')
+            file.write(f'{dataset}/{image_name:06d}.png {gps[0]} {gps[1]}\n')
 
         cv2.imwrite(f'./data/{dataset}/{image_name:06d}.png', image)
 
 def main():
     ros2data = Ros2data()
     sleep_time = 0.1
+    init_gps = 0,0
+    distance = 0
     try:
         idx = 1
         while not rospy.is_shutdown():
+            if init_gps == 0:
+                init_gps[0] = ros2data.get_gps()[0]
+                init_gps[1] = ros2data.get_gps()[1]
+
             ros2data.image_flag = True
             ros2data.gps_flag = True
-            if (ros2data.get_vel() > 0.1) and (int(ros2data.get_seq()) % 20 == 0 and ros2data.image_flag and ros2data.image_flag):
+
+            distance = gps_to_meter(init_gps[0], init_gps[1], ros2data.get_gps()[0], ros2data.get_gps()[1])
+
+            if (distance % 5 < 0.1 and ros2data.image_flag and ros2data.image_flag):
                 print(f'\rRat: {ros2data.get_gps()[0]}, long: {ros2data.get_gps()[1]}, idx: {idx}' , end = '          ')
                 ros2data.image_show()
                 # data_writer(ros2data.get_gps(), ros2data.get_image(), idx)
@@ -105,8 +116,6 @@ def main():
 
     except KeyboardInterrupt:
         pass
-
-    rospy.spin()
 
 if __name__ == '__main__':
     main()
