@@ -93,8 +93,8 @@ def main():
     sleep_time = 0.1
     init_gps = 0,0
     distance = 0
+    idx = 1
     try:
-        idx = 1
         while not rospy.is_shutdown():
             if init_gps == 0:
                 init_gps[0] = ros2data.get_gps()[0]
@@ -112,7 +112,7 @@ def main():
                 rospy.sleep(sleep_time)
                 idx += 1
             else:
-                print('\rvehicle is not moving...', end='                                            ')
+                print('\r ====================', end='                                            ')
 
     except KeyboardInterrupt:
         pass
