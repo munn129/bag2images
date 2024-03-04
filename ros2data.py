@@ -19,22 +19,30 @@ class Ros2data():
         self.bridge = CvBridge()
         self.time = 0
         self.seq = 0
+        self.image_flag = False
+        self.gps_flag = False
         rospy.init_node('test', anonymous=True)
         rospy.Subscriber('/novatel/oem7/inspva', INSPVA, self.inspva_callback)
         rospy.Subscriber('/gmsl_camera/dev/video0/compressed', CompressedImage, self.image_callback)
 
     def inspva_callback(self, data) -> None:
-        self.latitude = data.latitude
-        self.longitude = data.longitude
-        self.height = data.height
-        self.north_vel = data.north_velocity
-        self.east_vel = data.east_velocity
-        self.time = data.header.stamp.secs
-        self.seq = data.header.seq
+
+        if self.gps_flag:
+            self.latitude = data.latitude
+            self.longitude = data.longitude
+            self.height = data.height
+            self.north_vel = data.north_velocity
+            self.east_vel = data.east_velocity
+            self.time = data.header.stamp.secs
+            self.seq = data.header.seq
+            self.gps_flag = False
 
     def image_callback(self, data) -> None:
         try:
-            self.image = self.bridge.compressed_imgmsg_to_cv2(data, 'bgr8')
+            if self.image_flag:
+                self.image = self.bridge.compressed_imgmsg_to_cv2(data, 'bgr8')
+                self.image_flag = False
+                
         except Exception as e:
             print(e)
             return
@@ -70,7 +78,7 @@ class Ros2data():
 def data_writer(gps, image, idx) -> None:
     
     image_name = idx
-    dataset = '1024_with_height'
+    dataset = 'test'
 
     if image is not None:
         with open(f'./data/{dataset}/gps.txt', 'a') as file:
@@ -84,16 +92,21 @@ def main():
     try:
         idx = 1
         while not rospy.is_shutdown():
-            if (ros2data.get_vel() > 0.1) and (int(ros2data.get_seq()) % 20 == 0):
-                print(f'\rRat: {ros2data.get_gps()[0]}, long: {ros2data.get_gps()[1]}, idx: {idx}          ' , end = '')
-                # ros2data.image_show()
-                data_writer(ros2data.get_gps(), ros2data.get_image(), idx)
-                idx += 1
+            ros2data.image_flag = True
+            ros2data.gps_flag = True
+            if (ros2data.get_vel() > 0.1) and (int(ros2data.get_seq()) % 20 == 0 and ros2data.image_flag and ros2data.image_flag):
+                print(f'\rRat: {ros2data.get_gps()[0]}, long: {ros2data.get_gps()[1]}, idx: {idx}' , end = '          ')
+                ros2data.image_show()
+                # data_writer(ros2data.get_gps(), ros2data.get_image(), idx)
                 rospy.sleep(sleep_time)
+                idx += 1
             else:
-                print(f'\rvehicle is not moving...', end='')
+                print('\rvehicle is not moving...', end='                                            ')
+
     except KeyboardInterrupt:
         pass
+
+    rospy.spin()
 
 if __name__ == '__main__':
     main()
