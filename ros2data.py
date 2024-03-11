@@ -88,12 +88,20 @@ def data_writer(gps, image, idx) -> None:
 
         cv2.imwrite(f'./data/{dataset}/{image_name:06d}.png', image)
 
+def only_gps_writer(gps, idx) -> None:
+    dataset = 'test'
+    with open(f'./data/{dataset}/gps.txt', 'a') as file:
+        file.write(f'{idx} {gps[0]} {gps[1]}\n')
+
 def main():
     ros2data = Ros2data()
-    sleep_time = 0.1
+    sleep_time = 0.01
     init_gps = 0,0
     distance = 0
     idx = 1
+
+    gps_list = []
+
     try:
         while not rospy.is_shutdown():
             if init_gps == 0:
@@ -105,10 +113,15 @@ def main():
 
             distance = gps_to_meter(init_gps[0], init_gps[1], ros2data.get_gps()[0], ros2data.get_gps()[1])
 
+            # if (ros2data.gps_flag):
+            #     only_gps_writer(ros2data.get_gps(), idx)
+            #     idx += 1
+            #     rospy.sleep(sleep_time)
+
             if (distance % 5 < 0.1 and ros2data.image_flag and ros2data.image_flag):
                 print(f'\rRat: {ros2data.get_gps()[0]}, long: {ros2data.get_gps()[1]}, idx: {idx}' , end = '          ')
-                ros2data.image_show()
-                # data_writer(ros2data.get_gps(), ros2data.get_image(), idx)
+                # ros2data.image_show()
+                data_writer(ros2data.get_gps(), ros2data.get_image(), idx)
                 rospy.sleep(sleep_time)
                 idx += 1
             else:
