@@ -4,14 +4,17 @@ file_path = './data/1114/gps.txt'
 
 gps_list = []
 
-with open(file_path, 'r') as file:
-    for line in file:
-        line = line.split()
-        lat = float(line[1])
-        lon = float(line[2])
-        gps_list.append((lat, lon))
-        lat = 0
-        lon = 0
+def gps_reader(filepath, save_list):
+    with open(filepath, 'r') as file:
+        for line in file:
+            line = line.split()
+            lat = float(line[1])
+            lon = float(line[2])
+            save_list.append((lat,lon))
+            lat = 0
+            lon = 0
+
+gps_reader(file_path, gps_list)
 
 distance_sum = 0
 
