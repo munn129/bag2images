@@ -1,6 +1,6 @@
 from gps2meter import gps_to_meter
 
-file_path = './data/1024_10m/gps.txt'
+file_path = './data/1114/gps.txt'
 
 gps_list = []
 
