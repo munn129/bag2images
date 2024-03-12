@@ -1,12 +1,13 @@
 import os
 
-output_path = './rain_3rd_lane_list.txt'
+dataset = '1114'
 
-file_names = [i for i in range(1,35)]
+output_path = f'./data/{dataset}.txt'
+
+file_names = [i for i in range(2,3950)]
 
 with open(output_path, 'w') as file:
     for file_name in file_names:
-        file.write(f"rain_3rd_lane/{file_name:06d}.png\n")
+        file.write(f"{dataset}/{file_name:06d}.png\n")
 
 print("complete")
-
