@@ -4,11 +4,14 @@ import cv2
 from gps2meter import gps_to_meter
 
 from math import sqrt
+from tqdm import tqdm
 
 def image_rt_calculator(query_image_path, dataset_image_path, rt_list):
     
     query_image = cv2.imread(query_image_path, cv2.IMREAD_GRAYSCALE)
     dataset_image = cv2.imread(dataset_image_path, cv2.IMREAD_GRAYSCALE)
+
+    if (query_image is None or dataset_image is None): raise Exception("[ERROR] image == None")
 
     sift_obj = cv2.SIFT_create()
 
@@ -45,6 +48,9 @@ def image_rt_calculator(query_image_path, dataset_image_path, rt_list):
     rt_list.append(re_rot)
     rt_list.append(re_tran)
 
+def scale_calculator(q_lat, q_lon, d_lat, d_lon):
+    return sqrt((q_lat-d_lat)**2 + (q_lon-d_lon)**2)
+
 def main():
     query_image_path = './000060.png'
     dataset_image_path = './000030.png'
@@ -58,7 +64,7 @@ def main():
     query_gps = 37.396247679384764, 126.63717799601285
     data_gps = 37.39627776359797, 126.63713351147672
 
-    scale = sqrt((query_gps[0]-data_gps[0])**2 + (query_gps[1]-data_gps[1])**2)
+    scale = scale_calculator(query_gps[0], query_gps[1], data_gps[0], data_gps[1])
     print(scale)
 
     estimate = data_gps[0] + (scale * re_tran[0]), data_gps[1] + (scale * re_tran[1])
