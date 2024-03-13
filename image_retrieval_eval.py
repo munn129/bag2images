@@ -97,8 +97,8 @@ def error_calculator(result, query_gps_list, db_gps_list, distances, result_list
     result_list.append(top5)
 
 def main():
-    dataset = '1024_1m'
-    result_file_path = f'./data/{dataset}/PatchNetVLAD_predictions.txt'
+    dataset = '1024_10m'
+    result_file_path = f'./data/{dataset}/NetVLAD_predictions.txt'
     gps_file_path = f'./data/{dataset}/gps.txt'
     query_gps_file_path = f'./data/1114/gps.txt'
 
@@ -118,7 +118,7 @@ def main():
     retrieved_list = []
     result_sorting(result_file_path, result, retrieved_list)
 
-    pprint.pprint(result)
+    # pprint.pprint(result)
     # print(result['1114/000002.png'][0][-9:-5])
 
     # evaluation
