@@ -41,11 +41,9 @@ with open(result_file_path, 'r') as file:
             result[line[0][24:]] = retrieved_list
             retrieved_list = []
 
-        # if iter == 101: iter = 0
-
         iter += 1
 
-pprint.pprint(result)
+# pprint.pprint(result)
 # print(result['1114/000002.png'][0][-9:-5])
 
 # evaluation
@@ -87,3 +85,47 @@ for idx, val in enumerate(arr):
     print(f'min  : {min(val)}')
     print(f'max  : {max(val)}')
     print(f'mean : {sum(val)/len(val)}')
+
+# histogram calculator
+def histogram_cal(arr):
+    histogram_1 = 0
+    histogram_2_5 = 0
+    histogram_5 = 0
+    histogram_7_5 = 0
+    histogram_10 = 0
+    histogram_15 = 0
+    histogram_20 = 0
+    histogram_30 = 0
+    histogram_40 = 0
+    histogram_50 = 0
+    histogram_99 = 0
+
+    for i in arr:
+        if i < 1: histogram_1 += 1
+        elif i <= 1 and i < 2.5: histogram_2_5 += 1
+        elif i <= 2.5 and i < 5: histogram_5 += 1
+        elif i <= 5 and i < 7.5: histogram_7_5 += 1
+        elif i <= 7.5 and i < 10: histogram_10 += 1
+        elif i <= 10 and i < 15: histogram_15 += 1
+        elif i <= 15 and i < 20: histogram_20 += 1
+        elif i <= 20 and i < 30: histogram_30 += 1
+        elif i <= 30 and i < 40: histogram_40 += 1
+        elif i <= 40 and i < 50: histogram_50 += 1
+        else: histogram_99 += 1
+
+    print(f'histogram')
+    print(f'error < 1 : {histogram_1}')
+    print(f'1 <= error < 2.5 : {histogram_2_5}')
+    print(f'5 <= error < 5 : {histogram_5}')
+    print(f'5 <= error < 7.5: {histogram_7_5}')
+    print(f'7.5 <= error < 10 : {histogram_10}')
+    print(f'10 <= error < 15 : {histogram_15}')
+    print(f'15 <= error < 20 : {histogram_20}')
+    print(f'20 <= error < 30 : {histogram_30}')
+    print(f'30 <= error < 40 : {histogram_40}')
+    print(f'40 <= error < 50 : {histogram_50}')
+    print(f'50 <= error : {histogram_99}')
+
+for idx, val in enumerate(arr):
+    print(f'top{idx + 1} histogram')
+    histogram_cal(val)
