@@ -57,7 +57,7 @@ def result_sorting(result_file_path ,result, retrieved_list):
                 iter = 1
 
             if initial_query == line[0][24:] and iter < 6:
-                retrieved_list.append(line[1][24:])
+                retrieved_list.append(line[1][24:-1])
 
             if iter == 5:
                 result[line[0][24:]] = retrieved_list
@@ -69,7 +69,7 @@ def error_calculator(result, query_gps_list, db_gps_list, distances, result_list
     for key, value in result.items():
         query_gps = query_gps_list[int(key[-8:-4]) - 2]
         for i in value:
-            retrieved_gps = db_gps_list[int(i[-9:-5]) - 2]
+            retrieved_gps = db_gps_list[int(i[-8:-4]) - 2]
             distances.append(gps_to_meter(query_gps[0], query_gps[1], retrieved_gps[0], retrieved_gps[1]))
 
     top1 = []
@@ -118,7 +118,7 @@ def main():
     retrieved_list = []
     result_sorting(result_file_path, result, retrieved_list)
 
-    # pprint.pprint(result)
+    pprint.pprint(result)
     # print(result['1114/000002.png'][0][-9:-5])
 
     # evaluation
