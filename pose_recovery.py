@@ -74,8 +74,7 @@ def main():
     distance2 = gps_to_meter(data_gps[0], data_gps[1], estimate2[0], estimate2[1])
     gt = gps_to_meter(query_gps[0], query_gps[1], data_gps[0], data_gps[1])
 
-    print(f'decompose method: {distance}, error: {distance-gt}\n recover method: {distance2}, error: {distance2 - gt}\n\
-        gt: {gt}')
+    print(f'decompose method: {distance}, error: {distance-gt}\nrecover method: {distance2}, error: {distance2 - gt}\nretrieved: {gt}')
     
 if __name__ == '__main__':
     main()

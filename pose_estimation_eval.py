@@ -81,15 +81,25 @@ def main():
         for i in value:
             retreived_image = i
             retrieved_gps = db_gps_list[int(i[-8:-4]) - 2]
-            image_rt_calculator(f'{root_dir}/{query_image}', f'{root_dir}/{retreived_image}', rt_list)
-            scale = scale_calculator(query_gps[0], query_gps[1], retrieved_gps[0], retrieved_gps[1])
-            estimate = retrieved_gps[0] + (scale * rt_list[-1][0]), retrieved_gps[1] + (scale * rt_list[-1][1])
-            error.append(gps_to_meter(query_gps[0], query_gps[1], estimate[0], estimate[1]))
+            # image_rt_calculator(f'{root_dir}/{query_image}', f'{root_dir}/{retreived_image}', rt_list)
+            # scale = scale_calculator(query_gps[0], query_gps[1], retrieved_gps[0], retrieved_gps[1])
+            # estimate = retrieved_gps[0] + (scale * rt_list[-1][0]), retrieved_gps[1] + (scale * rt_list[-1][1])
+            # error.append(gps_to_meter(query_gps[0], query_gps[1], estimate[0][0], estimate[1][0]))
+            error.append(gps_to_meter(query_gps[0], query_gps[1], retrieved_gps[0], retrieved_gps[1]))
         iter += 1
-        if iter == 600: break
+        # if iter == 10: break
 
     estimation_error_calculator(error, result_list)
-    histogram_cal(result_list)
+
+    for idx, val in enumerate(result_list):
+        print(f'top{idx + 1} statistics')
+        print(f'min  : {min(val)}')
+        print(f'max  : {max(val)}')
+        print(f'mean : {sum(val)/len(val)}')
+    
+    for idx, val in enumerate(result_list):
+        print(f'top{idx + 1} histogram')
+        histogram_cal(val)
 
 if __name__ == '__main__':
     main()
