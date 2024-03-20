@@ -33,7 +33,7 @@ def histogram_cal(result_list):
 
     print(f'error < 1 : {histogram_1}')
     print(f'1 <= error < 2.5 : {histogram_2_5}')
-    print(f'5 <= error < 5 : {histogram_5}')
+    print(f'2.5 <= error < 5 : {histogram_5}')
     print(f'5 <= error < 7.5: {histogram_7_5}')
     print(f'7.5 <= error < 10 : {histogram_10}')
     print(f'10 <= error < 15 : {histogram_15}')
@@ -55,7 +55,7 @@ def result_sorting(result_file_path ,result, retrieved_list):
                 initial_query = line[0][24:]
                 iter = 1
 
-            if initial_query == line[0][24:] and iter < 6:
+            if (initial_query == line[0][24:]) and (iter < 6):
                 retrieved_list.append(line[1][24:-1])
 
             if iter == 5:
@@ -97,22 +97,26 @@ def error_calculator(result, query_gps_list, db_gps_list, distances, result_list
 
 def main():
     dataset = '1024_10m'
-    result_file_path = f'./data/{dataset}/NetVLAD_predictions.txt'
+    result_file_path = f'./data/{dataset}/PatchNetVLAD_predictions.txt'
     gps_file_path = f'./data/{dataset}/gps.txt'
     query_gps_file_path = f'./data/1114/gps.txt'
 
     # gps list index 0 -> 000002.png, 1 -> 000003.png, ...
     # read query gps list
+    # [(lat1, lon1), (lat2, lon2), ...]
     query_gps_list = []
     gps_reader(query_gps_file_path, query_gps_list)
     print('query gps list completes')
 
     # read db gps list
+    # [(lat1, lon1), (lat2, lon2), ...]
     db_gps_list = []
     gps_reader(gps_file_path, db_gps_list)
     print('db gps list completes')
 
     # read image retrieval result
+    # result = {'1114/003933.png' : ['1024_1m/002551.png', ... ], ...}
+    # result = {query image : [retrieved top1, top2, ... , top5], ...}
     result = {}
     retrieved_list = []
     result_sorting(result_file_path, result, retrieved_list)

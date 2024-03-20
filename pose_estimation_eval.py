@@ -61,6 +61,7 @@ def main():
     error = []
     result_list = []
     root_dir = './data'
+    estimates = []
     # for key, value in result.items():
     #     rt_list = []
     #     query_image = key
@@ -71,8 +72,9 @@ def main():
     #         image_rt_calculator(f'{root_dir}/{query_image}', f'{root_dir}/{retreived_image}', rt_list)
     #         scale = scale_calculator(query_gps[0], query_gps[1], retrieved_gps[0], retrieved_gps[1])
     #         estimate = retrieved_gps[0] + (scale * rt_list[4][0]), retrieved_gps[1] + (scale * rt_list[4][1])
-    #         # estimates.append(estimate)
+    #         estimates.append(estimate)
 
+    # pose estimation is TOOOO slow, so test just 10 iteration...
     iter = 0
     for key, value in tqdm(result.items()):
         rt_list = []
@@ -81,12 +83,12 @@ def main():
         for i in value:
             retreived_image = i
             retrieved_gps = db_gps_list[int(i[-8:-4]) - 2]
-            # image_rt_calculator(f'{root_dir}/{query_image}', f'{root_dir}/{retreived_image}', rt_list)
-            # scale = scale_calculator(query_gps[0], query_gps[1], retrieved_gps[0], retrieved_gps[1])
-            # estimate = retrieved_gps[0] + (scale * rt_list[-1][0]), retrieved_gps[1] + (scale * rt_list[-1][1])
-            # error.append(gps_to_meter(query_gps[0], query_gps[1], estimate[0][0], estimate[1][0]))
-            error.append(gps_to_meter(query_gps[0], query_gps[1], retrieved_gps[0], retrieved_gps[1]))
-        iter += 1
+            image_rt_calculator(f'{root_dir}/{query_image}', f'{root_dir}/{retreived_image}', rt_list)
+            scale = scale_calculator(query_gps[0], query_gps[1], retrieved_gps[0], retrieved_gps[1])
+            estimate = retrieved_gps[0] + (scale * rt_list[-1][0]), retrieved_gps[1] + (scale * rt_list[-1][1])
+            error.append(gps_to_meter(query_gps[0], query_gps[1], estimate[0], estimate[1]))
+            # error.append(gps_to_meter(query_gps[0], query_gps[1], retrieved_gps[0] + (scale * rt_list[-1][0]), retrieved_gps[1] + (scale * rt_list[-1][1])))
+        # iter += 1
         # if iter == 10: break
 
     estimation_error_calculator(error, result_list)
