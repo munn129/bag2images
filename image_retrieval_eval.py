@@ -31,7 +31,6 @@ def histogram_cal(result_list):
         elif i <= 40 and i < 50: histogram_50 += 1
         else: histogram_99 += 1
 
-    print(f'histogram')
     print(f'error < 1 : {histogram_1}')
     print(f'1 <= error < 2.5 : {histogram_2_5}')
     print(f'5 <= error < 5 : {histogram_5}')
