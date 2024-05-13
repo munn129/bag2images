@@ -15,6 +15,7 @@ class Ros2data():
         self.latitude = 0
         self.longitude = 0
         self.height = 0
+        self.azimuth = 0
         self.north_vel = 0
         self.east_vel = 0
         self.image = None
@@ -37,6 +38,7 @@ class Ros2data():
             self.east_vel = data.east_velocity
             self.time = data.header.stamp.secs
             self.seq = data.header.seq
+            self.azimuth = data.azimuth
             self.gps_flag = False
 
     def image_callback(self, data) -> None:
@@ -58,6 +60,9 @@ class Ros2data():
     def get_vel(self) -> float:
         return sqrt(self.north_vel**2 + self.east_vel**2)
     
+    def get_azimuth(self) -> float:
+        return self.azimuth
+    
     def get_image(self) -> list:
         return self.image
 
@@ -77,14 +82,14 @@ class Ros2data():
         else:
             print('\r image object is None', end='')
 
-def data_writer(gps, image, idx) -> None:
+def data_writer(gps, image, idx, azimuth, dataset_dir) -> None:
     
     image_name = idx
-    dataset = '1114'
+    dataset = dataset_dir
 
     if image is not None:
         with open(f'./data/{dataset}/gps.txt', 'a') as file:
-            file.write(f'{dataset}/{image_name:06d}.png {gps[0]} {gps[1]}\n')
+            file.write(f'{dataset}/{image_name:06d}.png {gps[0]} {gps[1]} {azimuth}\n')
 
         cv2.imwrite(f'./data/{dataset}/{image_name:06d}.png', image)
 
@@ -117,16 +122,16 @@ def main():
             #     rospy.sleep(sleep_time)
 
             # -0.2 bias
-            if (distance > 0.4 and ros2data.image_flag and ros2data.image_flag):
+            gap = 1
+            dataset_dir = '0404_second_lane_extended'
+            if (distance > gap and ros2data.image_flag and ros2data.image_flag):
                 print(f'\rRat: {ros2data.get_gps()[0]}, long: {ros2data.get_gps()[1]}, idx: {idx}' , end = '          ')
                 # ros2data.image_show()
-                data_writer(ros2data.get_gps(), ros2data.get_image(), idx)
+                data_writer(ros2data.get_gps(), ros2data.get_image(), idx, ros2data.get_azimuth(), dataset_dir)
                 rospy.sleep(sleep_time)
                 idx += 1
                 init_gps = ros2data.get_gps()[0], ros2data.get_gps()[1]
-            else:
-                print('\r ====================', end='                                            ')
-
+            
     except KeyboardInterrupt:
         pass
 
