@@ -1,4 +1,4 @@
 data/
 *.png
 __pycache__/
-stereo/
+*.jpg

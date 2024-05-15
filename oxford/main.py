@@ -10,10 +10,7 @@ import pandas as pd
 
 def main():
     
-    file_path = '2015-11-10-10-32-52/gps.csv'
-    df = pd.read_csv(file_path, usecols=['latitude', 'longitude'])
-
-    print(df)
+    pass
 
 if __name__ == '__main__':
     main()

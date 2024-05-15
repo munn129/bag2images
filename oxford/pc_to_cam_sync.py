@@ -39,6 +39,9 @@ def main():
             if pc_time == cam_time:
                 synced_caemra_timestamps.append(cam_time)
 
+    # for cam - gps time sync
+    idx_x = 0
+
     # imread and imwrite
     for cam_time in tqdm(synced_caemra_timestamps):
 
@@ -51,19 +54,29 @@ def main():
         img_output_path = os.path.join(output_path, img_name)
         cv2.imwrite(img_output_path, image)
 
+        # cam to gps time
+        cam_gps_time = cam_time
+        timestamps = gps_pd['timestamp']
+        idx_xx = 0 
+        idx = 0
+        for i in range(idx_x, len(timestamps) - 1):
+            idx += 1
+            gap = abs(int(cam_time) - int(timestamps[i]))
+            gap_post = abs(int(cam_time) - int(timestamps[i+1]))
 
-        '''
-        ERROR 상황
-        
-        라이다랑 카메라는 타임 싱크가 맞춰져 있어서,
-        라이다 시간이랑 카메라 시간이랑 동일한 데이터를 선택하면 끝
+            if gap > gap_post:
+                cam_gps_time = timestamps[i+1]
+                idx_x = idx
+            if int(cam_time) - int(timestamps[i]) > 0:
+                idx_xx += 1
 
-        근데 gps가 안맞춰져 있어서,
-        결국 가장 가까운 값을 찾아야 함
-        '''
+            if idx_xx > 10:
+                break
+                                   
 
         # camera time에 해당하는 gps 읽기
-        gps = gps_pd[gps_pd['timestamp'] == int(cam_time)]
+        # print(cam_gps_time)
+        gps = gps_pd[gps_pd['timestamp'] == int(cam_gps_time)]
         latitude = gps['latitude'].values[0]
         longitude = gps['longitude'].values[0]
 
