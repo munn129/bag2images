@@ -33,6 +33,8 @@ def main():
     with open(gps_output, 'w') as file:
         file.write('# image latitude longitude\n')
 
+    filenames_output = os.path.join(output_path, f'{output_path}_filename_list.txt')
+
     # 비슷한 시간을 찾아서 매칭해야 할 줄 알았는데, 이렇게해도 됨
     for pc_time in tqdm(pc_timestamps):
         for cam_time in camera_timestamps:
@@ -83,6 +85,10 @@ def main():
         # gps write(Kapture format)
         with open(gps_output, 'a') as file:
             file.write(f'{img_output_path} {latitude} {longitude}\n')
+
+        # for patch net vlad
+        with open(filenames_output, 'a') as file:
+            file.write(f'{img_output_path}\n')
         
 
 if __name__ == '__main__':
