@@ -30,6 +30,7 @@ def main():
     
     # gps file 생성
     gps_output = os.path.join(output_path, 'gps.txt')
+    gps_output = 'gps.txt'
     with open(gps_output, 'w') as file:
         file.write('# image latitude longitude\n')
 
@@ -61,6 +62,8 @@ def main():
         timestamps = gps_pd['timestamp']
         idx_xx = 0 
         idx = 0
+
+        # 부끄럽지만, 동작하지 않는 코드임...
         for i in range(idx_x, len(timestamps) - 1):
             idx += 1
             gap = abs(int(cam_time) - int(timestamps[i]))
