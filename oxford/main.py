@@ -34,13 +34,13 @@ def main():
     dataset_timestamp = []
     for cam_time in tqdm(camera_timestamp):
         for gps_time in gps['timestamp'].values:
-            if str(cam_time)[:11] == str(gps_time)[:11]:
+            if str(cam_time)[:10] == str(gps_time)[:10]:
                 latitude = gps[gps['timestamp'] == int(gps_time)]['latitude'].values[0]
                 longitude = gps[gps['timestamp'] == int(gps_time)]['longitude'].values[0]
                 dataset_timestamp.append((latitude, longitude))
                 continue
         
-    print(dataset_timestamp)
+    print(len(dataset_timestamp))
 
 if __name__ == '__main__':
     main()
