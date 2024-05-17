@@ -35,9 +35,10 @@ def main():
     
     # print(str(camera_timestamp[1])[:11])
 
-    dataset_timestamp = []
+    dataset_gps = []
     idx = 0
     inter_cnt = 0
+    total_time = 0
     for cam_time in tqdm(camera_timestamp):
         for i in range(idx, len(gps['timestamp'].values) - 1):
             pres = int(gps['timestamp'].values[i])
@@ -46,16 +47,23 @@ def main():
             lon = float(gps[gps['timestamp'] == int(pres)]['longitude'].values[0])
             if cam_time == pres:
                 idx += 1
-                dataset_timestamp.append((lat, lon))
+                dataset_gps.append((lat, lon))
                 break
             if pres < int(cam_time) and next > int(cam_time):
                 idx += 1
                 lat_next = float(gps[gps['timestamp'] == int(pres)]['latitude'].values[0])
                 lon_next = float(gps[gps['timestamp'] == int(pres)]['longitude'].values[0])
-                dataset_timestamp.append(((lat + lat_next)/2 , (lon + lon_next)/2))
+                dataset_gps.append(((lat + lat_next)/2 , (lon + lon_next)/2))
+                total_time += abs(int(cam_time) - pres)
                 break
+
+    for i in dataset_gps:
+        with open(f'{root}_result.txt', 'a') as file:
+            file.write(f'{i} \n')
+    
+    print(f'average time gap : {total_time/idx}')
                 
-    print(len(dataset_timestamp))
+    # print(len(dataset_gps))
 
     with open(root, 'w') as file:
         file.write('# image latitude longitude\n')
@@ -63,7 +71,7 @@ def main():
     # gps write(Kapture format)
     for i in range(len(camera_namelist)):
         with open(root, 'a') as file:
-            file.write(f'{camera_namelist[i][:-1]} {dataset_timestamp[i][0]} {dataset_timestamp[i][1]}\n')
+            file.write(f'{camera_namelist[i][:-1]} {dataset_gps[i][0]} {dataset_gps[i][1]}\n')
 
 if __name__ == '__main__':
     main()
