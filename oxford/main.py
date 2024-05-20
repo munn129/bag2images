@@ -11,10 +11,10 @@ from tqdm import tqdm
 
 def main():
     
-    root = '151110gps.txt'
+    root = '151113gps.txt'
 
-    time_file = 'oxford_151110_filename_list.txt'
-    gps_file = '151110gps/gps.csv'
+    time_file = 'oxford_151113_filename_list.txt'
+    gps_file = '151113gps/gps/gps.csv'
     
     # 이미지가 촬영된 시간
     camera_timestamp = []
