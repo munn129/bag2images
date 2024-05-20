@@ -14,7 +14,7 @@ def main():
     root = '151113gps.txt'
 
     time_file = 'oxford_151113_filename_list.txt'
-    gps_file = '151113gps/gps/gps.csv'
+    gps_file = '151113gps/gps.csv'
     
     # 이미지가 촬영된 시간
     camera_timestamp = []
@@ -51,9 +51,10 @@ def main():
                 break
             if pres < int(cam_time) and next > int(cam_time):
                 idx += 1
-                lat_next = float(gps[gps['timestamp'] == int(pres)]['latitude'].values[0])
-                lon_next = float(gps[gps['timestamp'] == int(pres)]['longitude'].values[0])
-                dataset_gps.append(((lat + lat_next)/2 , (lon + lon_next)/2))
+                # lat_next = float(gps[gps['timestamp'] == int(pres)]['latitude'].values[0])
+                # lon_next = float(gps[gps['timestamp'] == int(pres)]['longitude'].values[0])
+                # dataset_gps.append(((lat + lat_next)/2 , (lon + lon_next)/2))
+                dataset_gps.append((lat,lon))
                 total_time += abs(int(cam_time) - pres)
                 break
 
